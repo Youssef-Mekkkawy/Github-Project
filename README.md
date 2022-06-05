@@ -58,7 +58,7 @@ import math
 > ## This Function Convert KB, MB, GB, etc... To Byte.
 > 
 > ```python
-> def Bytes_Calulation(self, size_bytes:int, UNIT:str = [ "B" , "KB" , "MG" , "GB" ,"TP" , "PB" , "KIB" , "MIB" , "GIB", "TB" , "PB"], Type:int = 1000 | 1024):
+> def Bytes_Calulation(self, size_bytes:int, UNIT:str = "B", Type:int = 1000 | 1024):
 >     UNIT = UNIT.upper()
 > 
 >     if UNIT in self.size_name_binary or UNIT in self.size_name_decimal:
