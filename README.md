@@ -4,10 +4,10 @@
 > 
 > ### Binary Calculation.
 > 
-> > $$
-> > i = {log _{1024} \left(Size\right)} \newline 
-p = 1024^2 \newline
-s = Size/p \newline
+> $$
+> i = {log _{1024} \left(Size\right)} \newline 
+>p = 1024^2 \newline
+>s = Size/p \newline
 > > $$
 > 
 > ### Decimal Calculation.
