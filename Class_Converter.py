@@ -3,43 +3,62 @@ import math
 class Converter:
 
     def __init__(self):
-        self.size_names = ("B", "KB", "MB", "GB", "TB", "PB")
-
-    def get_size_index(self, unit):
-        unit = unit.upper()
-        if unit in self.size_names:
-            return self.size_names.index(unit)
-        return None
-
-    def convert_bytes(self, size_bytes, unit="B", base=1000):
-        size_index = self.get_size_index(unit)
+        self.size_names_decimal = ("B", "KB", "MB", "GB", "TB", "PB")
+        self.size_names_binary = ("B", "KiB", "MiB", "GiB", "TiB", "PiB")
         
-        if size_index is None:
-            return "Error: Unsupported unit"
-        
-        power = math.pow(base, size_index)
-        size = round(size_bytes / power, 2)
-        
-        return size, self.size_names[size_index]
-
-    def convert_bytes_advanced(self, input_str, base=1000):
+    @staticmethod
+    def if_size_equal_zero(size):
+        if size == 0:
+            return "0B", 0, "B"
+    
+    def bytes_calculation(self, size_bytes, unit="B", base=1000):
         try:
-            size_str, unit = input_str.split()
-            size_bytes = float(size_str)
-        except ValueError:
-            return "Error: Input should be in the format '10GB'"
+            unit = unit.upper()
+        except Exception as e:
+            return "Unit can't be empty"
+        
+        if unit in self.size_names_binary or unit in self.size_names_decimal:
+            exponent = self.size_names_decimal.index(unit)
+            multiplier = math.pow(base, exponent)
+            calculated_size = size_bytes * multiplier
+            size = round(calculated_size, 2)
+            
+            if base == 1000:
+                size_name = self.size_names_decimal[exponent]
+            elif base == 1024:
+                size_name = self.size_names_binary[exponent]
+            else:
+                return "Please use Decimal (1000) or Binary (1024)"
+            
+            return size, size_name
+        else:
+            return "Unit not supported."
 
-        size_index = self.get_size_index(unit)
+    def calculation(self, size_bytes, base=1000):
+        exponent = int(math.floor(math.log(size_bytes, base)))
+        multiplier = math.pow(base, exponent)
+        size = round(size_bytes / multiplier, 2)
         
-        if size_index is None:
-            return "Error: Unsupported unit"
+        if base == 1000:
+            size_name = self.size_names_decimal[exponent]
+        elif base == 1024:
+            size_name = self.size_names_binary[exponent]
+        else:
+            return "Please use Decimal (1000) or Binary (1024)"
         
-        power = math.pow(base, size_index)
-        size = round(size_bytes * power, 2)
-        
-        return size, self.size_names[size_index]
+        return size, size_name
 
-# Example usage
-converter = Converter()
-print(converter.convert_bytes(1024, "KB"))  # Output: (1.0, 'KB')
-print(converter.convert_bytes_advanced("10GB"))  # Output: (10000000000.0, 'GB')
+    def decimal_byte(self, size_bytes):
+        self.if_size_equal_zero(size_bytes)
+        size, size_name = self.calculation(size_bytes, 1000)
+        return f"{size} {size_name}", size, size_name
+
+    def binary_byte(self, size_bytes):
+        self.if_size_equal_zero(size_bytes)
+        size, size_name = self.calculation(size_bytes, 1024)
+        return f"{size} {size_name}", size, size_name
+
+if __name__ == "__main__":
+    unit_converter = Converter()
+    print(unit_converter.bytes_calculation(29929612))
+    print(unit_converter.calculation(29929612))
